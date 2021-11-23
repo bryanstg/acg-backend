@@ -18,11 +18,32 @@ valor -> int ✅
 stock -> int ✅
 """
 
-class Product(db.Model):
+class Crud(object):
+    @classmethod
+    def create(cls):
+        """ Create a new instance """
+        pass
+    
+    @classmethod
+    def get_all(cls):
+        """ Get all the instances in db"""
+        pass
+
+    @classmethod
+    def get_by_id(cls, id):
+        """ Get an instance in db by id"""
+        pass
+    
+    @classmethod
+    def update(cls, instance, data):
+        """ Update an instance from db """
+        pass
+
+class Product(db.Model, Crud):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
-    creation_date = db.Column(db.Datetime(timezone=True), nullable=False, default=lambda : datetime.now(timezone.utc))
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id') unique=False, nullable=False)
+    creation_date = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda : datetime.now(timezone.utc))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), unique=False, nullable=False)
     price = db.Column(db.String(80), nullable=False, default=0)
     value = db.Column(db.String(80), nullable=False, default=0)
     stock = db.Column(db.Integer, nullable=False, default=0)
@@ -42,9 +63,9 @@ class Product(db.Model):
         }
 
 
-class Category(db.Model):
+class Category(db.Model, Crud):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Colum(db.String(240), nullable=False)
+    name = db.Column(db.String(240), nullable=False)
     description = db.Column(db.String(240), nullable=False)
     products = db.relationship('Product', backref='product', uselist=True)
 
