@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db
 #from models import Person
 
 app = Flask(__name__)
@@ -41,5 +41,5 @@ def handle_hello():
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
-    PORT = int(os.environ.get('PORT', 3000))
+    PORT = int(os.environ.get('PORT', 3500))
     app.run(host='0.0.0.0', port=PORT, debug=False)
