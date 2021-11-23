@@ -1,42 +1,33 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
+from utils import APIException
 
 db = SQLAlchemy()
 
-""" 
-Tabla Categoría debe contener: id, nombre y descripción.
-id -> int 
-nombre -> str
-descripción -> str
-Tabla Producto debe contener: id, fecha creación, nombre, categoría, precio, valor, stock
-id-> int ✅
-fecha_creacion -> date ✅
-nombre -> str ✅
-categoria_id -> int ✅
-precio -> int ✅
-valor -> int ✅
-stock -> int ✅
-"""
 
 class Crud(object):
     @classmethod
-    def create(cls):
-        """ Create a new instance """
-        pass
-    
-    @classmethod
     def get_all(cls):
-        """ Get all the instances in db"""
-        pass
+        """ Get all the instances in db. If there is any error, return None"""
+        try:
+            return cls.query.all()
+        except Exception as error:
+            print(error)
+            return None
 
     @classmethod
     def get_by_id(cls, id):
-        """ Get an instance in db by id"""
-        pass
+        """ Get an instance in db by id, if it does not exists return None"""
+        return cls.query.filter_by(id = id).one_or_none()
     
     @classmethod
     def update(cls, instance, data):
         """ Update an instance from db """
+        pass
+
+    @classmethod
+    def delete(self):
+        """ Delete an instance from db """
         pass
 
 class Product(db.Model, Crud):
@@ -44,9 +35,34 @@ class Product(db.Model, Crud):
     name = db.Column(db.String(250), nullable=False)
     creation_date = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda : datetime.now(timezone.utc))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), unique=False, nullable=False)
-    price = db.Column(db.String(80), nullable=False, default=0)
-    value = db.Column(db.String(80), nullable=False, default=0)
-    stock = db.Column(db.Integer, nullable=False, default=0)
+    price = db.Column(db.String(80), nullable=False, default="0")
+    value = db.Column(db.String(80), nullable=False, default="0")
+    stock = db.Column(db.String, nullable=False, default="0")
+
+    def __init__(self, **kwargs):
+        """ 
+        Poducts constructor. Recive keywords arguments and assign it
+        """
+        if kwargs.get('value') is not None:
+            self.value = kwargs.get('value')
+        if kwargs.get('price') is not None:
+            self.price = kwargs.get('price')
+        if kwargs.get('stock') is not None:
+            self.stock = kwargs.get('stock')
+        self.category_id = kwargs.get('category_id')
+        self.name = kwargs.get('name')
+
+    @classmethod
+    def create(cls, **kwargs):
+        """ 
+        Checks the arguments and create a new instance and return it. If there is an error, raise an API exception
+        """
+        if kwargs.get('name') is None:
+            raise APIException('Missing product name', 400)
+        if kwargs.get('category_id') is None:
+            raise APIException('Missing category', 400)
+
+        return cls(**kwargs)
 
     def __repr__(self):
         return '<Product %r>' % self.name
@@ -68,6 +84,25 @@ class Category(db.Model, Crud):
     name = db.Column(db.String(240), nullable=False)
     description = db.Column(db.String(240), nullable=False)
     products = db.relationship('Product', backref='product', uselist=True)
+    
+    def __init__(self, **kwargs):
+        """ 
+        Categories constructor. Recive keywords arguments and assign it.
+        """
+        self.name = kwargs.get('name')
+        self.description = kwargs.get('description')
+
+    @classmethod
+    def create(cls, **kwargs):
+            """
+            Checks the arguments and create a new instance and return it. If there is an error, raise an API exception.
+            """
+        if kwargs.get('name') is None:
+            raise APIException('Missing category name', 400)
+        if kwargs.get('description') is None:
+            raise APIException('Missing category description', 400)
+        
+        return cls(**kwargs)
 
     def __repr__(self):
         return '<Category %r>' % self.name
