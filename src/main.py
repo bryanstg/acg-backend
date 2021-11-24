@@ -58,9 +58,11 @@ def handle_categories(category_id=None):
             return jsonify({"message": "Category id was not send, try again"}), 400
         if request_body.get('name') is None or request_body.get('description') is None:
             return jsonify({
-                "message": "Please send name and description even if it stills the same."
+                "message": "Please send name and description even if it still the same."
             }), 400
         category = Category.get_by_id(category_id)
+        if category is None:
+            return jsonify({"message": "Category not found"}), 404
         is_updated = category.update(
             name = request_body['name'],
             description = request_body['description']
@@ -143,7 +145,20 @@ def handle_products(product_id=None):
 
     if request.method == 'PUT':
         request_body = request.json
-        
+        if product_id is None:
+            return jsonify({"message": "Product id was not send, try again"}), 400
+        if request_body.get('name') is None or request_body.get('category_id') is None:
+            return jsonify({
+                "message": "Please send the entire info even if still the same."
+            }), 400
+        product = Product.get_by_id(product_id)
+        if product is None:
+            return jsonify({"message": "Product not found"}), 404
+        is_updated = product.update(**request_body)
+        if is_updated:
+            return jsonify([]), 204
+        else:
+            return jsonify({ "message": "Something happened while saving on db, please try again."})
     if request.method == 'DELETE':
         pass
 
