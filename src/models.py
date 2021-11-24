@@ -93,6 +93,14 @@ class Product(db.Model, Crud):
             db.session.rollback()
             return False
 
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return True
+        except Exception as error:
+            db.session.rollback()
+            return False
 
     def __repr__(self):
         return '<Product %r>' % self.name
@@ -138,13 +146,23 @@ class Category(db.Model, Crud):
         """ 
         Update an instance from db 
         """
+        print(self)
         if kwargs.get('name') is not None:
             self.name = kwargs.get('name')
         if kwargs.get('description') is not None:
             self.category_id = kwargs.get('description')
-        
+        print(self)
         try:
-            db.sesion.commit()
+            db.session.commit()
+            return True
+        except Exception as error:
+            db.session.rollback()
+            return False
+    
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
             return True
         except Exception as error:
             db.session.rollback()
