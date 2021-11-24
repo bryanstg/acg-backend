@@ -124,11 +124,16 @@ def handle_products(product_id=None):
             "product" : product.serialize()
         }), 200
     if request.method == 'POST':
+        request_body = request.json
+        product = Product.create(**request_body)
+        print(product)
+        
+        return jsonify(product.serialize()), 200
     
     if request.method == 'PUT':
-    
+        pass
     if request.method == 'DELETE':
-
+        pass
 
 
 # this only runs if `$ python src/main.py` is executed
