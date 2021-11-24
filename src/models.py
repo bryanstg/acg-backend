@@ -7,6 +7,11 @@ db = SQLAlchemy()
 
 class Crud(object):
     @classmethod
+    def create(cls, **kwargs):
+        """ Create a new instance"""
+        return cls(**kwargs)
+
+    @classmethod
     def get_all(cls):
         """ Get all the instances in db. If there is any error, return None"""
         try:
@@ -20,15 +25,17 @@ class Crud(object):
         """ Get an instance in db by id, if it does not exists return None"""
         return cls.query.filter_by(id = id).one_or_none()
     
-    @classmethod
-    def update(cls, instance, data):
-        """ Update an instance from db """
-        pass
 
-    @classmethod
     def delete(self):
         """ Delete an instance from db """
-        pass
+        try:
+            db.session.delete(self)
+            db.session.commit()
+            return True
+        except Exception as error:
+            db.session.rollback()
+            print(error)
+            return False
 
 class Product(db.Model, Crud):
     id = db.Column(db.Integer, primary_key=True)
@@ -64,6 +71,29 @@ class Product(db.Model, Crud):
 
         return cls(**kwargs)
 
+    def update(self, **kwargs):
+        """ 
+        Update an instance from db 
+        """
+        if kwargs.get('name') is not None:
+            self.name = kwargs.get('name')
+        if kwargs.get('category_id') is not None:
+            self.category_id = kwargs.get('category_id')
+        if kwargs.get('value') is not None:
+            self.value = kwargs.get('value')
+        if kwargs.get('price') is not None:
+            self.price = kwargs.get('price')
+        if kwargs.get('stock') is not None:
+            self.stock = kwargs.get('stock')
+        
+        try:
+            db.sesion.commit()
+            return True
+        except Exception as error:
+            db.session.rollback()
+            return False
+
+
     def __repr__(self):
         return '<Product %r>' % self.name
 
@@ -94,9 +124,9 @@ class Category(db.Model, Crud):
 
     @classmethod
     def create(cls, **kwargs):
-            """
-            Checks the arguments and create a new instance and return it. If there is an error, raise an API exception.
-            """
+        """
+        Checks the arguments and create a new instance and return it. If there is an error, raise an API exception.
+        """
         if kwargs.get('name') is None:
             raise APIException('Missing category name', 400)
         if kwargs.get('description') is None:
@@ -104,10 +134,29 @@ class Category(db.Model, Crud):
         
         return cls(**kwargs)
 
+    def update(self, **kwargs):
+        """ 
+        Update an instance from db 
+        """
+        if kwargs.get('name') is not None:
+            self.name = kwargs.get('name')
+        if kwargs.get('description') is not None:
+            self.category_id = kwargs.get('description')
+        
+        try:
+            db.sesion.commit()
+            return True
+        except Exception as error:
+            db.session.rollback()
+            return False
+
     def __repr__(self):
         return '<Category %r>' % self.name
 
     def serialize(self):
+        """ 
+        Represents category instance in a dictionary and return it. 
+        """
         return {
             "id": self.id,
             "name": self.name,
