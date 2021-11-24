@@ -94,6 +94,8 @@ def handle_categories(category_id=None):
 
 
     #Else, request method is DELETE
+    if category_id is None: 
+        return jsonify({ "message" : "Missing product id"}), 400
     category= Category.get_by_id(category_id)
     if category is None:
         return jsonify({
@@ -160,7 +162,19 @@ def handle_products(product_id=None):
         else:
             return jsonify({ "message": "Something happened while saving on db, please try again."})
     if request.method == 'DELETE':
-        pass
+        if product_id is None:
+            return jsonify({ "message": "Missing product id"}), 400
+        product = Product.get_by_id(product_id)
+
+        if product is None:
+            return jsonify({ "message" : "Product not found"}), 404
+        is_deleted = product.delete()
+        if is_deleted:
+            return jsonify([]), 200
+        else:
+            return jsonify({
+            "message": "Something happened trying to delete, please try again"
+        }), 500
 
 
 # this only runs if `$ python src/main.py` is executed
