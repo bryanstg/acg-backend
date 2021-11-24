@@ -49,6 +49,8 @@ def handle_categories(category_id=None):
             }), 200
         else:
             return jsonify({"message": "category was not found" }), 404
+
+
     if request.method == 'PUT':
         #PUT is always request with a category_id
         request_body = request.json
@@ -70,6 +72,8 @@ def handle_categories(category_id=None):
             return jsonify({
                 "message": "An error occur while updating the resource, try again"
             }), 500
+
+
     if request.method == 'POST':
         request_body = request.json
         new_category = Category.create(**request_body)
@@ -85,6 +89,8 @@ def handle_categories(category_id=None):
             return jsonify({
                 "message": "Something happened while saving on database, try again"
             }), 500
+
+
     #Else, request method is DELETE
     category= Category.get_by_id(category_id)
     if category is None:
@@ -102,6 +108,7 @@ def handle_categories(category_id=None):
 @app.route('/products', methods=['GET', 'POST'])
 @app.route('/products/<int:product_id>', methods=['GET', 'PUT', 'DELETE'])
 def handle_products(product_id=None):
+
     if request.method == 'GET':
         #If product_id is None, request all the products
         if product_id is None:
@@ -116,6 +123,8 @@ def handle_products(product_id=None):
         return jsonify({
             "product" : product.serialize()
         }), 200
+
+
     if request.method == 'POST':
         request_body = request.json
         new_product = Product.create(**request_body)
@@ -130,12 +139,11 @@ def handle_products(product_id=None):
             return jsonify({
                 "message": "Something happened while saving on database, try again"
             }), 500 
-        
-        
 
-    
+
     if request.method == 'PUT':
-        pass
+        request_body = request.json
+        
     if request.method == 'DELETE':
         pass
 

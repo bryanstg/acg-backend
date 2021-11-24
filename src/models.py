@@ -94,7 +94,7 @@ class Product(db.Model, Crud):
             self.stock = kwargs.get('stock')
         
         try:
-            db.sesion.commit()
+            db.session.commit()
             return True
         except Exception as error:
             db.session.rollback()
