@@ -72,14 +72,7 @@ def handle_categories(category_id=None):
             }), 500
     if request.method == 'POST':
         request_body = request.json
-        if request_body.get('name') is None or request_body.get('description') is None:
-            return jsonify({
-                "message": "Please send name and description. Check documentation for more information"
-            }), 400
-        new_category = Category.create(
-            name = request_body['name'],
-            description = request_body['description']
-        )
+        new_category = Category.create(**request_body)
         #If new_category is no an instance of Category is because something happened
         if not isinstance(new_category, Category):
             return josinfy({
@@ -125,10 +118,21 @@ def handle_products(product_id=None):
         }), 200
     if request.method == 'POST':
         request_body = request.json
-        product = Product.create(**request_body)
-        print(product)
+        new_product = Product.create(**request_body)
+        if not isinstance(new_product, Product):
+            return josinfy({
+                "message": "Something happend while creating a product, try again"
+            }), 500
+        is_save = new_product.save()
+        if is_save:
+            return jsonify({"product": new_product.serialize()}), 201
+        else:
+            return jsonify({
+                "message": "Something happened while saving on database, try again"
+            }), 500 
         
-        return jsonify(product.serialize()), 200
+        
+
     
     if request.method == 'PUT':
         pass
