@@ -42,9 +42,9 @@ class Product(db.Model, Crud):
     name = db.Column(db.String(250), nullable=False)
     creation_date = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda : datetime.now(timezone.utc))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), unique=False, nullable=False)
-    price = db.Column(db.String(80), nullable=False, default="0")
-    value = db.Column(db.String(80), nullable=False, default="0")
-    stock = db.Column(db.String, nullable=False, default="0")
+    price = db.Column(db.String(80), nullable=False)
+    value = db.Column(db.String(80), nullable=False)
+    stock = db.Column(db.String, nullable=False)
 
     def __init__(self, **kwargs):
         """ 
@@ -62,12 +62,19 @@ class Product(db.Model, Crud):
     @classmethod
     def create(cls, **kwargs):
         """ 
-        Checks the arguments and create a new instance and return it. If there is an error, raise an API exception
+        Checks the arguments and create a new instance and return it. If there is an error, raise an API exception.
+
         """
         if kwargs.get('name') is None:
             raise APIException('Missing product name', 400)
         if kwargs.get('category_id') is None:
             raise APIException('Missing category', 400)
+        if kwargs.get('price') is None:
+            raise APIException('Missing price', 400)
+        if kwargs.get('value') is None:
+            raise APIException('Missing value', 400)
+        if kwargs.get('stock') is None:
+            raise APIException('Missing stock', 400)
 
         return cls(**kwargs)
 
@@ -146,12 +153,12 @@ class Category(db.Model, Crud):
         """ 
         Update an instance from db 
         """
-        print(self)
+        
         if kwargs.get('name') is not None:
             self.name = kwargs.get('name')
         if kwargs.get('description') is not None:
             self.category_id = kwargs.get('description')
-        print(self)
+    
         try:
             db.session.commit()
             return True
