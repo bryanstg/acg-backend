@@ -1,17 +1,4 @@
-# Flask Boilerplate for Profesional Development
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/from-referrer/)
-<p align="center">
-    <a href="https://youtu.be/ORxQ-K3BzQA"><img height="200px" src="https://github.com/4GeeksAcademy/flask-rest-hello/blob/main/docs/assets/how-to.png?raw=true?raw=true" /></a>
-</p>
-
-## Features
-
-- Extensive documentation [here](https://github.com/4GeeksAcademy/flask-rest-hello/tree/master/docs).
-- Integrated with Pipenv for package managing.
-- Fast deloyment to heroku with `$ pipenv run deploy`.
-- Use of `.env` file.
-- SQLAlchemy integration for database abstraction.
 
 ## Installation (automatic if you are using gitpod)
 
@@ -21,7 +8,7 @@ The following steps are automatically runned withing gitpod, if you are doing a 
 
 ```sh
 pipenv install;
-mysql -u root -e "CREATE DATABASE example";
+psql -u postgres "CREATE DATABASE example";
 pipenv run init;
 pipenv run migrate;
 pipenv run upgrade;
@@ -49,7 +36,7 @@ $ pipenv run upgrade  (to update your databse with the migrations)
 
 # Manual Installation for Ubuntu & Mac
 
-⚠️ Make sure you have `python 3.6+` and `MySQL` installed on your computer and MySQL is running, then run the following commands:
+⚠️ Make sure you have `python 3.6+` and `POSTGRESQL` installed on your computer and MySQL is running, then run the following commands:
 ```sh
 $ pipenv install (to install pip packages)
 $ pipenv run migrate (to create the database)
@@ -57,18 +44,3 @@ $ pipenv run start (to start the flask webserver)
 ```
 
 
-## Deploy to Heroku
-
-This template is 100% compatible with Heroku[https://www.heroku.com/], just make sure to understand and execute the following steps:
-
-```sh
-// Install heroku
-$ npm i heroku -g
-// Login to heroku on the command line
-$ heroku login -i
-// Create an application (if you don't have it already)
-$ heroku create <your_application_name>
-// Commit and push to heroku (commited your changes)
-$ git push heroku main
-```
-:warning: For a more detailed explanation on working with .env variables or the MySQL database [read the full guide](https://github.com/4GeeksAcademy/flask-rest-hello/blob/master/docs/DEPLOY_YOUR_APP.md).

@@ -157,7 +157,7 @@ class Category(db.Model, Crud):
         if kwargs.get('name') is not None:
             self.name = kwargs.get('name')
         if kwargs.get('description') is not None:
-            self.category_id = kwargs.get('description')
+            self.description = kwargs.get('description')
     
         try:
             db.session.commit()
